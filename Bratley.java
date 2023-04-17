@@ -1,3 +1,32 @@
+// INSTRUCTIONS
+// Run at command line with syntax
+// java Bratley [filename]
+// Ex: java Bratley input.txt
+//
+// Input file format is the number of tasks on the first line followed by the tasks
+// on subsequent lines in the format: arrivalTime completionTime deadline
+// Example input.txt is included which contains the following set of tasks:
+//
+//       +---+---+---+---+
+//       | J1| J2| J3| J4|
+//   +---+---+---+---+---+
+//   | ai|	4|	1|	1|	2|
+//   +---+---+---+---+---+
+//   | ci|	2|	1|	2|	1|
+//   +---+---+---+---+---+
+//   | di|	7|	5|	6|	3|
+//   +---+---+---+---+---+
+//
+// In the file format used this looks like:
+//
+// 		4
+// 		4 2 7
+// 		1 1 5
+// 		1 2 6
+// 		2 1 3
+//
+// Included input.txt has a feasible schedule of 2->4->3->1
+
 import java.util.*;
 import java.io.*;
 
