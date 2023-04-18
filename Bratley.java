@@ -46,16 +46,16 @@ public class Bratley
 
 		for(int i = 0; i < numTasks; i++)
 		{
-			tasks.add(new Task(in.nextInt(), in.nextInt(), in.nextInt()));
+			tasks.add(new Task(in.nextInt(), in.nextInt(), in.nextInt(), i+1));
 		}
 	}
 
-	// Wrapper method creates the current time 
+	// Wrapper method creates all relevant variables and then calls the private method
 	public static boolean hasValidSchedule(Bratley b)
 	{
 		int curTime = 0;
 		boolean isValid = false;
-		ArrayList<Task> tasks = b.tasks;
+		ArrayList<Task> tasks = new ArrayList<Task>(b.tasks);
 		b.schedule = new ArrayDeque<Integer>();
 		return hasValidSchedule(b.tasks, isValid, b.schedule, curTime);
 	}
@@ -66,13 +66,51 @@ public class Bratley
 		{
 			return true;
 		}
+		ArrayList<Task> ogTasks = new ArrayList<Task>(tasks);
+		for (Task t : ogTasks)
+		{
+			if (t.arrivalTime > curTime)
+			{
+				curTime += t.arrivalTime - curTime;
+			}
+
+			curTime += t.completionTime;
+
+			if (curTime <= t.deadline)
+			{
+				if (tasks.size() == 1)
+				{
+					return true;
+				}
+				else
+				{
+					schedule.push(t.taskNum);
+					tasks.remove(t);
+					return hasValidSchedule(tasks, isValid, schedule, curTime);
+				}
+			}
+
+		}
 		return false;
 	}
 
 	// Will print a valid schedule if it exists
-	public void printValidSchedule()
+	// 
+	public static void printValidSchedule(Bratley b)
 	{
-		System.out.println("This is the printValidSchedule method");
+		if (b.schedule == null)
+		{
+			hasValidSchedule(b);
+			printValidSchedule(b);
+		}
+		else if (b.schedule.isEmpty())
+		{
+			System.out.println("A valid schedule does not exist!");
+		}
+		else
+		{
+			System.out.println(b.schedule);
+		}
 	}
 
 	public static void main(String [] args) throws Exception
@@ -84,6 +122,7 @@ public class Bratley
 		}
 
 		Bratley b = new Bratley(args[0]);
-		hasValidSchedule(b);
+		System.out.println(hasValidSchedule(b));
+		printValidSchedule(b);
 	}
 }
