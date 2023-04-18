@@ -97,7 +97,14 @@ public class Bratley
 					// Remove it from the list of tasks
 					tasks.remove(t);
 					// Call the function again with our reduced list of tasks
-					return hasValidSchedule(tasks, isValid, schedule, curTime);
+					// If it returns false then continue
+					if (!hasValidSchedule(tasks, isValid, schedule, curTime))
+					{
+						if (!schedule.isEmpty())
+							schedule.pop();
+						tasks.add(t);
+						continue;
+					}
 				}
 			}
 			// If we reach this part of the code, we must reset the curTime and pop from the stack
