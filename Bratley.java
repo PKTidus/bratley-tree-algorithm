@@ -62,11 +62,15 @@ public class Bratley
 
 	private static boolean hasValidSchedule(ArrayList<Task> tasks, boolean isValid, Deque<Integer> schedule, int curTime)
 	{
+		// isValid might be useless
 		if (isValid)
 		{
 			return true;
 		}
+		int oldTime = curTime;
+		// Copy of the original tasks, we don't want to modify the original tasks
 		ArrayList<Task> ogTasks = new ArrayList<Task>(tasks);
+		// Loop through the tasks we're looking at and make the calculations
 		for (Task t : ogTasks)
 		{
 			if (t.arrivalTime > curTime)
@@ -78,24 +82,33 @@ public class Bratley
 
 			if (curTime <= t.deadline)
 			{
+				// If we're on time and this is the last task, we can return true, this is the last task in a valid schedule
 				if (tasks.size() == 1)
 				{
+					isValid = true;
+					// Push it to the stack
+					schedule.push(t.taskNum);
 					return true;
 				}
 				else
 				{
+					// Push it to the stack
 					schedule.push(t.taskNum);
+					// Remove it from the list of tasks
 					tasks.remove(t);
+					// Call the function again with our reduced list of tasks
 					return hasValidSchedule(tasks, isValid, schedule, curTime);
 				}
 			}
-
+			// If we reach this part of the code, we must reset the curTime and pop from the stack
+			curTime = oldTime;
+			if (!schedule.isEmpty())
+				schedule.pop();
 		}
-		return false;
+		return isValid;
 	}
 
 	// Will print a valid schedule if it exists
-	// 
 	public static void printValidSchedule(Bratley b)
 	{
 		if (b.schedule == null)
@@ -118,7 +131,7 @@ public class Bratley
 		if (args.length < 1)
 		{
 			System.out.println("You're the worst");
-			System.exit(0);
+			System.exit(1);
 		}
 
 		Bratley b = new Bratley(args[0]);
