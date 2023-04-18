@@ -35,6 +35,7 @@ public class Bratley
 	// A member to keep track of the number of tasks and an ArrayList of the task objects
 	int numTasks;
 	ArrayList<Task> tasks;
+	Deque<Integer> schedule;
 
 	// Creating an object from a file that contains a set of tasks
 	public Bratley(String filename) throws Exception
@@ -49,15 +50,27 @@ public class Bratley
 		}
 	}
 
-	// Checks if there is a valid schedule, this is where the
-	// implementation of the algorithm goes
-	public boolean hasValidSchedule(Bratley brat)
+	// Wrapper method creates the current time 
+	public static boolean hasValidSchedule(Bratley b)
 	{
+		int curTime = 0;
+		boolean isValid = false;
+		ArrayList<Task> tasks = b.tasks;
+		b.schedule = new ArrayDeque<Integer>();
+		return hasValidSchedule(b.tasks, isValid, b.schedule, curTime);
+	}
+
+	private static boolean hasValidSchedule(ArrayList<Task> tasks, boolean isValid, Deque<Integer> schedule, int curTime)
+	{
+		if (isValid)
+		{
+			return true;
+		}
 		return false;
 	}
 
 	// Will print a valid schedule if it exists
-	public void printValidSchedule(Bratley brat)
+	public void printValidSchedule()
 	{
 		System.out.println("This is the printValidSchedule method");
 	}
@@ -71,5 +84,6 @@ public class Bratley
 		}
 
 		Bratley b = new Bratley(args[0]);
+		hasValidSchedule(b);
 	}
 }
