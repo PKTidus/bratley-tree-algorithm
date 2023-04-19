@@ -1,4 +1,5 @@
 // INSTRUCTIONS
+// Pass in input text file as first command line argument
 // Run at command line with syntax
 // java Bratley [filename]
 // Ex: java Bratley input.txt
@@ -26,6 +27,10 @@
 // 		2 1 3
 //
 // Included input.txt has a feasible schedule of 2->4->3->1
+// Included input2.txt has a feasible schedule of 3->2->4->1
+// Included input3.txt does not have a feasible schedule
+// Included input4.txt does not have a feasible schedule
+// Included input5.txt has a feasible schedule of 2->4->3->1
 
 import java.util.*;
 import java.io.*;
@@ -63,19 +68,44 @@ public class Bratley
 	private static boolean hasValidSchedule(ArrayList<Task> tasks, Deque<Integer> schedule,
 											int curTime, int numTasks, boolean [] used)
 	{
-		// Try all possible moves
-		for (int i = 1; i <= numTasks; i++)
+		// Hooray! The schedule is valid when our schedule contains all of our tasks
+		if (schedule.size() == numTasks)
 		{
+			return true;
+		}
+		// Try all possible moves
+		for (int i = 0; i < numTasks; i++)
+		{
+			// Temporary variables for easy access later
+			Task curTask = tasks.get(i);
+			int tempTime = curTime;
 			// Check if move is legal
-			if (!isLegalMove(tasks.get(i), curTime, used))
+			if (!isLegalMove(curTask, curTime, used))
 			{
+				// If it's not legal, skip to the next iteration of the loop.
 				continue;
 			}
 			else
 			{
-				used[tasks.get(i).taskNum] = true;
-				schedule.push(tasks.get(i).taskNum);
+				// If the move is legal, make calculations, set the task as used and push it to the stack
+				if (curTime < curTask.arrivalTime)
+				{
+					curTime = curTask.arrivalTime;
+				}
+				curTime += curTask.completionTime;
+				used[curTask.taskNum] = true;
+				schedule.push(curTask.taskNum);
 			}
+
+			// Perform recursive descent
+			if (hasValidSchedule(tasks, schedule, curTime, numTasks, used))
+			{
+				return true;
+			}
+			// Otherwise we need to revert those changes.
+			schedule.pop();
+			used[curTask.taskNum] = false;
+			curTime = tempTime;
 		}
 		return false;
 	}
@@ -115,7 +145,20 @@ public class Bratley
 		}
 		else
 		{
-			System.out.println(b.schedule);
+			System.out.println("A feasible schedule for the given tasks is:");
+			Iterator<Integer> it = b.schedule.descendingIterator();
+			while(it.hasNext())
+			{
+				System.out.print(it.next());
+				if (it.hasNext())
+				{
+					System.out.print("->");
+				}
+				else
+				{
+					System.out.println();
+				}
+			}
 		}
 	}
 
