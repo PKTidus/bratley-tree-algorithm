@@ -9,14 +9,14 @@ The algorithm uses backtracking to find the first feasible schedule, not necessa
 ## Schedule file format
 The input text file should have an integer describing the number of tasks on the first line and then describe each task on subsequent lines by having integers describing its arrival time, completion time and deadline separated by spaces.
 
-For example, included input.txt looks like:\
+For example, included input.txt looks like:
 <pre>4
 4 2 7
 1 1 5
 1 2 6
 2 1 3</pre>
 
-Which describes the following schedule:\
+Which describes the following schedule:
 <pre>     | J1 | J2 | J3 | J4 |
 | ai | 4  | 1  | 1  | 2  |
 | ci | 2  | 1  | 2  | 1  |
