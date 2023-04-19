@@ -100,6 +100,7 @@ public class Bratley
 			// Perform recursive descent
 			if (hasValidSchedule(tasks, schedule, curTime, numTasks, used))
 			{
+				// If these changes result in a valid schedule, we may return true
 				return true;
 			}
 			// Otherwise we need to revert those changes.
@@ -107,6 +108,7 @@ public class Bratley
 			used[curTask.taskNum] = false;
 			curTime = tempTime;
 		}
+		// If we make it here, return false.
 		return false;
 	}
 
@@ -171,7 +173,7 @@ public class Bratley
 		}
 
 		Bratley b = new Bratley(args[0]);
-		System.out.println(hasValidSchedule(b));
+		hasValidSchedule(b);
 		printValidSchedule(b);
 	}
 }
