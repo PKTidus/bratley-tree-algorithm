@@ -54,65 +54,51 @@ public class Bratley
 	public static boolean hasValidSchedule(Bratley b)
 	{
 		int curTime = 0;
-		boolean isValid = false;
+		boolean [] used = new boolean[b.numTasks+1];
 		ArrayList<Task> tasks = new ArrayList<Task>(b.tasks);
 		b.schedule = new ArrayDeque<Integer>();
-		return hasValidSchedule(b.tasks, isValid, b.schedule, curTime);
+		return hasValidSchedule(b.tasks, b.schedule, curTime, b.numTasks, used);
 	}
 
-	private static boolean hasValidSchedule(ArrayList<Task> tasks, boolean isValid, Deque<Integer> schedule, int curTime)
+	private static boolean hasValidSchedule(ArrayList<Task> tasks, Deque<Integer> schedule,
+											int curTime, int numTasks, boolean [] used)
 	{
-		// isValid might be useless
-		if (isValid)
+		// Try all possible moves
+		for (int i = 1; i <= numTasks; i++)
+		{
+			// Check if move is legal
+			if (!isLegalMove(tasks.get(i), curTime, used))
+			{
+				continue;
+			}
+			else
+			{
+				used[tasks.get(i).taskNum] = true;
+				schedule.push(tasks.get(i).taskNum);
+			}
+		}
+		return false;
+	}
+
+	public static boolean isLegalMove(Task t, int curTime, boolean [] used)
+	{
+		if (used[t.taskNum])
+		{
+			return false;
+		}
+		if (t.arrivalTime > curTime)
+		{
+			curTime += t.arrivalTime;
+		}
+		curTime += t.completionTime;
+		if (curTime > t.deadline)
+		{
+			return false;
+		}
+		else
 		{
 			return true;
 		}
-		int oldTime = curTime;
-		// Copy of the original tasks, we don't want to modify the original tasks
-		ArrayList<Task> ogTasks = new ArrayList<Task>(tasks);
-		// Loop through the tasks we're looking at and make the calculations
-		for (Task t : ogTasks)
-		{
-			if (t.arrivalTime > curTime)
-			{
-				curTime += t.arrivalTime - curTime;
-			}
-
-			curTime += t.completionTime;
-
-			if (curTime <= t.deadline)
-			{
-				// If we're on time and this is the last task, we can return true, this is the last task in a valid schedule
-				if (tasks.size() == 1)
-				{
-					isValid = true;
-					// Push it to the stack
-					schedule.push(t.taskNum);
-					return true;
-				}
-				else
-				{
-					// Push it to the stack
-					schedule.push(t.taskNum);
-					// Remove it from the list of tasks
-					tasks.remove(t);
-					// Call the function again with our reduced list of tasks
-					// If it returns false then continue
-					if (!hasValidSchedule(tasks, isValid, schedule, curTime))
-					{
-						if (!schedule.isEmpty())
-							schedule.pop();
-						tasks.add(t);
-						continue;
-					}
-				}
-			}
-			// If we reach this part of the code, we must reset the curTime and pop from the stack
-			curTime = oldTime;
-			if (!schedule.isEmpty())
-				schedule.pop();
-		}
-		return isValid;
 	}
 
 	// Will print a valid schedule if it exists
